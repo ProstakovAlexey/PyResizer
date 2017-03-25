@@ -22,6 +22,7 @@ class QCustomWidget(QWidget):
 
          self.mimeQLabel = QtWidgets.QWidget()
          self.mimeQLabel.setObjectName("mimeQLabel")
+         print(self.mimeQLabel.getContentsMargins)
          allQHBoxLayout = QtWidgets.QHBoxLayout()
          allQHBoxLayout.addWidget(self.mimeQLabel)
          self.setLayout(allQHBoxLayout)
@@ -48,11 +49,17 @@ class Example(QWidget):
         self.init_ui()
 
     def init_ui(self):
+        self.resize(300, 300)
         #self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.name_programm = QtWidgets.QLabel('PyResizer')
         self.icon = QtWidgets.QPushButton('icon')
         self.exit_button = QtWidgets.QPushButton('X')
         self.minimize_button = QtWidgets.QPushButton('_')
+
+        self.width_lineEdit = QtWidgets.QLineEdit()
+        self.height_lineEdit = QtWidgets.QLineEdit()
+          
+        self.convert_button = QtWidgets.QPushButton('Convert')
 
         self.drag_field = QCustomWidget()
 
@@ -73,10 +80,23 @@ class Example(QWidget):
 
         h_field_box = QtWidgets.QHBoxLayout()
         h_field_box.addWidget(self.drag_field)
+        h_field_box.setContentsMargins(0, 0, 0, 0)
+        h_field_box.setSpacing(0)
+
+        h_size_box = QtWidgets.QHBoxLayout()
+        h_size_box.addWidget(self.width_lineEdit)
+        h_size_box.addWidget(self.height_lineEdit)
+
+        h_button_box = QtWidgets.QHBoxLayout()
+        h_button_box.addWidget(self.convert_button)
+        
 
         v_main_box = QtWidgets.QVBoxLayout()
         v_main_box.addLayout(h_header_box)
         v_main_box.addLayout(h_field_box)
+        v_main_box.addLayout(h_size_box)
+        v_main_box.addLayout(h_button_box)
+        
         
         
         
