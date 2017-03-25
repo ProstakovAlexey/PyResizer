@@ -1,3 +1,9 @@
+# -*- coding: utf-8 -*-
+
+# 
+# Created by: FUNNYDMAN
+#
+# WARNING! All changes made in this file will be lost!
 
 import sys
 from PIL import Image
@@ -7,6 +13,29 @@ from PyQt5 import QtGui, QtWidgets, QtCore
 from PyQt5.QtWidgets import (QMainWindow, QTextEdit,
     QAction, QFileDialog, QApplication, QLabel)
 
+styleSheetPath = "qss/style.stylesheet"
+
+class QCustomWidget(QWidget):
+     def __init__ (self, title, parent = None):
+         self.title = title
+         super(QCustomWidget, self).__init__(parent)
+
+         self.mimeQLabel = QtWidgets.QLabel(self.title)
+         allQHBoxLayout = QtWidgets.QHBoxLayout()
+         allQHBoxLayout.addWidget(self.mimeQLabel)
+         self.setLayout(allQHBoxLayout)
+
+         self.setAcceptDrops(True)
+
+     def dragEnterEvent(self, e):
+         if e.mimeData().hasFormat('image/*'):
+             e.accept()
+         else:
+             e.ignore()
+
+     def dropEvent(self, e):
+         print(e.mimeData().text())
+
 
 class Example(QWidget):
 
@@ -15,35 +44,51 @@ class Example(QWidget):
 
         self.init_ui()
 
-
     def init_ui(self):
-        path_to_img = 'smile.png'
-        self.setGeometry(300, 300, 300, 220)
-        self.setWindowTitle('Icon')
-        self.setWindowIcon(QIcon(path_to_img))
-        #im = Image.open(path_to_img)
-        #(width, height) = im.size
-        #print(width)
-        #Убираем стандартное окно
         #self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        #self.setWindowFlags(QtCore.Qt.WindowTitleHint)
-        self.button = QtWidgets.QPushButton('Go')
-        v_box = QtWidgets.QVBoxLayout()
-        v_box.addWidget(self.button)
-        self.setLayout(v_box)
-        """connecting"""
-        self.button.clicked.connect(self.bnt_click)
-        self.show()
+        self.setAcceptDrops(True)
+        self.name_programm = QtWidgets.QLabel('PyResizer')
+        self.icon = QtWidgets.QPushButton('icon')
+        self.exit_button = QtWidgets.QPushButton('X')
+        self.minimize_button = QtWidgets.QPushButton('_')
 
-    def bnt_click(self):
-        filename = QFileDialog.getOpenFileName(self, 'Open File', '',
-                                               "Images (*.png)")
-        image = Image.open(filename[0])
-        width = image.size[0] #Определяем ширину. 
-        height = image.size[1] #Определяем высоту. 	
-        print(width)
+        self.drag_field = QCustomWidget('test')
+
+        #self.exit_button.setIcon(QtGui.QIcon('exit-icon.png'));
+        #self.exit_button.setIconSize(QtCore.QSize(32, 32));
+
+        #self.minimize_button.setIcon(QtGui.QIcon('min-icon.png'));
+        #self.minimize_button.setIconSize(QtCore.QSize(32, 32));
+
+        
+        h_header_box = QtWidgets.QHBoxLayout()
+        h_header_box.setContentsMargins(0, 0, 0, 0)
+        h_header_box.setSpacing(0)
+        h_header_box.addWidget(self.icon, alignment = QtCore.Qt.AlignLeft)
+        h_header_box.addWidget(self.exit_button, alignment = QtCore.Qt.AlignRight)
+        h_header_box.insertWidget(1, self.minimize_button, stretch=15, alignment = QtCore.Qt.AlignRight)
+
+
+        h_field_box = QtWidgets.QHBoxLayout()
+        h_field_box.addWidget(self.drag_field)
+
+        v_main_box = QtWidgets.QVBoxLayout()
+        v_main_box.addLayout(h_header_box)
+        v_main_box.addLayout(h_field_box)
         
         
+        
+        self.setLayout(v_main_box)
+        
+        
+
+
+        #load stylesheets
+        with open(styleSheetPath, "r") as fh:
+            self.setStyleSheet(fh.read())
+
+        self.show()
+  
 
 if __name__ == '__main__':
 

@@ -1,0 +1,34 @@
+QToolButton
+{
+  color:#000;
+  font-family:Consolas;
+  line-height: 1.42857143;
+  text-align: right;
+  /*background-color: #5cb85c;
+  width: 13px;
+  height: 13px;
+  display:inline-block;
+  background-image: url('logo.jpg');*/
+  background: transparent;
+}
+QLabel {
+  background: red;
+}
+QWidget
+{
+    color: #fff;
+    font-size:15px;
+    background-color: #302F2F;
+    selection-background-color:#3d8ec9;
+    selection-color: black;
+    background-clip: border;
+    border-radius:10px;
+    border-image: none;
+    outline: 0;
+    margin-top:0px;
+}
+
+QHBoxLayout {
+  background: blue;
+  border:2px solid red;
+}
