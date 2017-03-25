@@ -13,8 +13,9 @@ import logging.handlers
 from PyQt5.QtWidgets import QApplication, QWidget
 from PyQt5.QtGui import QIcon
 from PyQt5 import QtGui, QtWidgets, QtCore
+from PyQt5 import *
 from PyQt5.QtWidgets import (QMainWindow, QTextEdit,
-    QAction, QFileDialog, QApplication, QLabel)
+    QAction, QFileDialog, QApplication, QLabel, QDialog)
 from PyQt5.QtCore import *
 from PyQt5.QtGui import *
 
@@ -80,7 +81,39 @@ class QCustomWidget(QWidget):
               paths_alist.append(i.toString())
          print(paths_alist)
          
-         
+class Dialog(QDialog):
+    def __init__ (self, parent = None):
+        super(Dialog, self).__init__(parent)
+        self.save_settings = QtWidgets.QPushButton('Save')
+        
+        self.extension_1 = QtWidgets.QRadioButton('png')
+        self.extension_2 = QtWidgets.QRadioButton('jpg')
+        self.extension_3 = QtWidgets.QRadioButton('Как у исходного изображения')
+
+        self.extension_group = QtWidgets.QGroupBox('extension')
+           
+        
+        v_dmain_box = QtWidgets.QVBoxLayout()
+        v_dmain_box.addWidget(self.extension_1)
+        v_dmain_box.addWidget(self.extension_2)
+        v_dmain_box.addWidget(self.extension_3)
+        
+        
+
+        self.extension_group.setLayout(v_dmain_box)
+
+        vlayout = QtWidgets.QVBoxLayout()
+        vlayout.addWidget(self.extension_group)
+        vlayout.addWidget(self.save_settings)
+        
+        vlayout.addStretch()
+        self.setLayout(vlayout)
+        
+
+        
+        
+        
+    
 
 
 
@@ -115,6 +148,9 @@ class Example(QWidget):
           
         self.convert_button = QtWidgets.QPushButton('Convert')
 
+        self.settings_button = QtWidgets.QPushButton('Settings')
+        
+
         self.drag_field = QCustomWidget()
 
         #self.exit_button.setIcon(QtGui.QIcon('exit-icon.png'));
@@ -131,6 +167,8 @@ class Example(QWidget):
         h_header_box.addWidget(self.exit_button, alignment = QtCore.Qt.AlignRight)
         h_header_box.insertWidget(1, self.minimize_button, stretch=15, alignment = QtCore.Qt.AlignRight)
 
+        h_add_box = QtWidgets.QHBoxLayout()
+        h_add_box.addWidget(self.settings_button)
 
         h_field_box = QtWidgets.QHBoxLayout()
         h_field_box.addWidget(self.drag_field)
@@ -147,6 +185,7 @@ class Example(QWidget):
 
         v_main_box = QtWidgets.QVBoxLayout()
         v_main_box.addLayout(h_header_box)
+        v_main_box.addLayout(h_add_box)
         v_main_box.addLayout(h_field_box)
         v_main_box.addLayout(h_size_box)
         v_main_box.addLayout(h_button_box)
@@ -159,12 +198,22 @@ class Example(QWidget):
         
         """connecting buttons"""
         self.convert_button.clicked.connect(self.function_convert)
+        self.settings_button.clicked.connect(self.function_show_settings)
 
         #load stylesheets
         with open(styleSheetPath, "r") as fh:
             self.setStyleSheet(fh.read())
 
         self.show()
+
+    def function_show_settings(self):
+        some = Dialog(self)
+        result = some.exec_()
+        if result == QtWidgets.QDialog.Accepted:
+            print("Ok")
+            #получаем данные с формы
+        else:
+            print("нажата кнопка cancel")
   
     def function_convert(self):
         try:
