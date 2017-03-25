@@ -16,25 +16,28 @@ from PyQt5.QtWidgets import (QMainWindow, QTextEdit,
 styleSheetPath = "qss/style.stylesheet"
 
 class QCustomWidget(QWidget):
-     def __init__ (self, title, parent = None):
-         self.title = title
+     def __init__ (self, parent = None):
          super(QCustomWidget, self).__init__(parent)
+         self.setAcceptDrops(True)
 
-         self.mimeQLabel = QtWidgets.QLabel(self.title)
+         self.mimeQLabel = QtWidgets.QWidget()
+         self.mimeQLabel.setObjectName("mimeQLabel")
          allQHBoxLayout = QtWidgets.QHBoxLayout()
          allQHBoxLayout.addWidget(self.mimeQLabel)
          self.setLayout(allQHBoxLayout)
 
-         self.setAcceptDrops(True)
+
 
      def dragEnterEvent(self, e):
-         if e.mimeData().hasFormat('image/*'):
+         if e.mimeData().hasFormat('text/uri-list'):
              e.accept()
          else:
              e.ignore()
+             print("faled")
 
      def dropEvent(self, e):
          print(e.mimeData().text())
+
 
 
 class Example(QWidget):
@@ -46,13 +49,12 @@ class Example(QWidget):
 
     def init_ui(self):
         #self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        self.setAcceptDrops(True)
         self.name_programm = QtWidgets.QLabel('PyResizer')
         self.icon = QtWidgets.QPushButton('icon')
         self.exit_button = QtWidgets.QPushButton('X')
         self.minimize_button = QtWidgets.QPushButton('_')
 
-        self.drag_field = QCustomWidget('test')
+        self.drag_field = QCustomWidget()
 
         #self.exit_button.setIcon(QtGui.QIcon('exit-icon.png'));
         #self.exit_button.setIconSize(QtCore.QSize(32, 32));

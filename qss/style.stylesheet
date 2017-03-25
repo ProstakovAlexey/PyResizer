@@ -9,14 +9,14 @@ QToolButton
   height: 13px;
   display:inline-block;
   background-image: url('logo.jpg');*/
-  background: transparent;
+  /*background: transparent;*/
 }
 QLabel {
   background: red;
 }
 QWidget
 {
-    color: #fff;
+/*    color: #fff;
     font-size:15px;
     background-color: #302F2F;
     selection-background-color:#3d8ec9;
@@ -25,10 +25,13 @@ QWidget
     border-radius:10px;
     border-image: none;
     outline: 0;
-    margin-top:0px;
+    margin-top:0px;*/
 }
-
+QWidget#mimeQLabel {
+  background-color: #302F2F;
+}
 QHBoxLayout {
   background: blue;
   border:2px solid red;
 }
+cx_Freeze
