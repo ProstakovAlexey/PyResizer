@@ -6,6 +6,7 @@
 # WARNING! All changes made in this file will be lost!
 
 import sys
+import os
 from PIL import Image
 import logging
 import logging.handlers
@@ -43,19 +44,28 @@ for h in handlers:
 
 
 styleSheetPath = "qss/style.stylesheet"
-
+global paths_alist
+paths_alist = []
 class QCustomWidget(QWidget):
      def __init__ (self, parent = None):
          super(QCustomWidget, self).__init__(parent)
          self.setAcceptDrops(True)
 
-         self.mimeQLabel = QtWidgets.QLabel('Drag image here')
+         self.mimeQLabel = QtWidgets.QPushButton('Drag image here')
+         self.mimeQLabel.setFixedHeight(200)
          self.mimeQLabel.setObjectName("mimeQLabel")
          allQHBoxLayout = QtWidgets.QHBoxLayout()
          allQHBoxLayout.addWidget(self.mimeQLabel)
          self.setLayout(allQHBoxLayout)
 
-
+         self.mimeQLabel.clicked.connect(self.select_image)
+     def select_image(self):
+         filename = QFileDialog.getOpenFileName(self, 'Open File', '',
+                                               "Images (*.png)")
+         
+         paths_alist.append(filename[0])
+         print("select")
+         print(paths_alist)
 
      def dragEnterEvent(self, e):
          if e.mimeData().hasFormat('text/uri-list'):
@@ -65,9 +75,7 @@ class QCustomWidget(QWidget):
              print("faled")
 
      def dropEvent(self, e):
-         global paths_alist
          data_raw = e.mimeData().urls()
-         paths_alist = []
          for i in data_raw:
               paths_alist.append(i.toString())
          print(paths_alist)
@@ -152,7 +160,6 @@ class Example(QWidget):
         """connecting buttons"""
         self.convert_button.clicked.connect(self.function_convert)
 
-
         #load stylesheets
         with open(styleSheetPath, "r") as fh:
             self.setStyleSheet(fh.read())
@@ -167,11 +174,14 @@ class Example(QWidget):
              print("enter size")
         else:
              size = (width, height)
-             image = Image.open('logo.jpg')
-             resized_image = image.resize(size, Image.ANTIALIAS)
-             resized_image.save('test_image.jpg')
+             ff = ['logo.jpg', 'test.png']
+             for i in ff:
+                  image = Image.open(i)
+                  filename, file_extension = os.path.splitext(i)
+                  resized_image = image.resize(size, Image.ANTIALIAS)
+                  resized_image.save(filename+file_extension)
              print("done")
-             #print(paths_alist[0])
+             
         
 
 
