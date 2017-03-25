@@ -91,25 +91,40 @@ class Dialog(QDialog):
         self.extension_3 = QtWidgets.QRadioButton('Как у исходного изображения')
 
         self.extension_group = QtWidgets.QGroupBox('extension')
-           
-        
+                 
         v_dmain_box = QtWidgets.QVBoxLayout()
         v_dmain_box.addWidget(self.extension_1)
         v_dmain_box.addWidget(self.extension_2)
         v_dmain_box.addWidget(self.extension_3)
         
-        
-
         self.extension_group.setLayout(v_dmain_box)
+
+        
+        self.size_1 = QtWidgets.QRadioButton('Пропорционально')
+        self.size_2 = QtWidgets.QRadioButton('Точно до пикселя')
+        self.size_group = QtWidgets.QGroupBox('size')
+        v_dsize_box = QtWidgets.QVBoxLayout()
+        v_dsize_box.addWidget(self.size_1)
+        v_dsize_box.addWidget(self.size_2)
+        self.size_group.setLayout(v_dsize_box)
+        
 
         vlayout = QtWidgets.QVBoxLayout()
         vlayout.addWidget(self.extension_group)
+        vlayout.addWidget(self.size_group)
+        
         vlayout.addWidget(self.save_settings)
         
-        vlayout.addStretch()
         self.setLayout(vlayout)
         
+        """connecting"""
+        self.save_settings.clicked.connect(self.function_set_settings)
 
+    def function_set_settings(self):
+        value='png'
+        print(value)
+        return value
+        
         
         
         
