@@ -93,6 +93,7 @@ class Dialog(QDialog):
         self.extension_1 = QtWidgets.QRadioButton('png')
         self.extension_2 = QtWidgets.QRadioButton('jpg')
         self.extension_3 = QtWidgets.QRadioButton('Как у исходного изображения')
+        self.extension_3.setChecked(True)
 
         self.extension_group = QtWidgets.QGroupBox('extension')
                  
@@ -106,6 +107,8 @@ class Dialog(QDialog):
         
         self.size_1 = QtWidgets.QRadioButton('С соблюдением пропорций')
         self.size_2 = QtWidgets.QRadioButton('Точно до указанных размеров')
+        self.size_2.setChecked(True)
+
         self.size_group = QtWidgets.QGroupBox('size')
         v_dsize_box = QtWidgets.QVBoxLayout()
         v_dsize_box.addWidget(self.size_1)
@@ -114,6 +117,8 @@ class Dialog(QDialog):
         
         self.name_1 = QtWidgets.QRadioButton('Оставить прежним')
         self.name_2 = QtWidgets.QRadioButton('По формату')
+        self.name_1.setChecked(True)
+
         self.name_group = QtWidgets.QGroupBox('name of file')
         v_dname_box = QtWidgets.QVBoxLayout()
         v_dname_box.addWidget(self.name_1)
@@ -134,9 +139,27 @@ class Dialog(QDialog):
         self.save_settings.clicked.connect(self.function_set_settings)
 
     def function_set_settings(self):
-        value='png'
-        print(value)
-        return value
+        extensions_list = [self.extension_1, self.extension_2, self.extension_3]
+        sizes_list = [self.size_1, self.size_2]
+        names_list = [self.name_1, self.name_2]
+        settings_list = []
+        for extension in extensions_list:
+            if extension.isChecked():
+               settings_list.append(extension.text())
+
+        for size in sizes_list:
+            if size.isChecked():
+               settings_list.append(size.text())
+
+        for name in names_list:
+            if name.isChecked():
+               settings_list.append(name.text())
+        print(settings_list)
+        return settings_list
+        
+            
+                
+        
         
         
         
