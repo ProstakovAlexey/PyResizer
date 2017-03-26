@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 # 
 # Created by: FUNNYDMAN
 #
@@ -47,6 +46,7 @@ for h in handlers:
 styleSheetPath = "qss/style.stylesheet"
 global paths_alist
 paths_alist = []
+
 class QCustomWidget(QWidget):
      def __init__ (self, parent = None):
          super(QCustomWidget, self).__init__(parent)
@@ -59,14 +59,13 @@ class QCustomWidget(QWidget):
          allQHBoxLayout.addWidget(self.mimeQLabel)
          self.setLayout(allQHBoxLayout)
 
-         self.mimeQLabel.clicked.connect(self.select_image)
-     def select_image(self):
+         self.mimeQLabel.clicked.connect(self.function_select_image)
+     def function_select_image(self):
          filename = QFileDialog.getOpenFileName(self, 'Open File', '',
                                                "Images (*.png)")
+         if filename[0]:
+             paths_alist.append(filename[0])
          
-         paths_alist.append(filename[0])
-         print("select")
-         print(paths_alist)
 
      def dragEnterEvent(self, e):
          if e.mimeData().hasFormat('text/uri-list'):
@@ -79,7 +78,12 @@ class QCustomWidget(QWidget):
          data_raw = e.mimeData().urls()
          for i in data_raw:
               paths_alist.append(i.toString())
-         print(paths_alist)
+         paths_alist_len = str(len(paths_alist))
+         self.mimeQLabel.setText(paths_alist_len)
+         #Вызываем главную функцию
+         #Example().function_convert(paths_alist)
+         #print(len(paths_alist))
+         
          
 class Dialog(QDialog):
     def __init__ (self, parent = None):
@@ -100,18 +104,27 @@ class Dialog(QDialog):
         self.extension_group.setLayout(v_dmain_box)
 
         
-        self.size_1 = QtWidgets.QRadioButton('Пропорционально')
-        self.size_2 = QtWidgets.QRadioButton('Точно до пикселя')
+        self.size_1 = QtWidgets.QRadioButton('С соблюдением пропорций')
+        self.size_2 = QtWidgets.QRadioButton('Точно до указанных размеров')
         self.size_group = QtWidgets.QGroupBox('size')
         v_dsize_box = QtWidgets.QVBoxLayout()
         v_dsize_box.addWidget(self.size_1)
         v_dsize_box.addWidget(self.size_2)
         self.size_group.setLayout(v_dsize_box)
         
+        self.name_1 = QtWidgets.QRadioButton('Оставить прежним')
+        self.name_2 = QtWidgets.QRadioButton('По формату')
+        self.name_group = QtWidgets.QGroupBox('name of file')
+        v_dname_box = QtWidgets.QVBoxLayout()
+        v_dname_box.addWidget(self.name_1)
+        v_dname_box.addWidget(self.name_2)
+        self.name_group.setLayout(v_dname_box)
 
         vlayout = QtWidgets.QVBoxLayout()
         vlayout.addWidget(self.extension_group)
         vlayout.addWidget(self.size_group)
+        vlayout.addWidget(self.name_group)
+        
         
         vlayout.addWidget(self.save_settings)
         
@@ -127,11 +140,6 @@ class Dialog(QDialog):
         
         
         
-        
-    
-
-
-
 class Example(QWidget):
 
     def __init__(self):
@@ -164,6 +172,11 @@ class Example(QWidget):
         self.convert_button = QtWidgets.QPushButton('Convert')
 
         self.settings_button = QtWidgets.QPushButton('Settings')
+
+        self.delete_button = QtWidgets.QToolButton()
+        self.delete_button.setIcon(QtGui.QIcon('delete-icon.png'));
+        self.delete_button.setIconSize(QtCore.QSize(32, 32));
+        
         
 
         self.drag_field = QCustomWidget()
@@ -183,7 +196,9 @@ class Example(QWidget):
         h_header_box.insertWidget(1, self.minimize_button, stretch=15, alignment = QtCore.Qt.AlignRight)
 
         h_add_box = QtWidgets.QHBoxLayout()
+        h_add_box.addWidget(self.delete_button)
         h_add_box.addWidget(self.settings_button)
+        
 
         h_field_box = QtWidgets.QHBoxLayout()
         h_field_box.addWidget(self.drag_field)
@@ -214,12 +229,15 @@ class Example(QWidget):
         """connecting buttons"""
         self.convert_button.clicked.connect(self.function_convert)
         self.settings_button.clicked.connect(self.function_show_settings)
+        self.delete_button.clicked.connect(self.function_del_paths)
 
         #load stylesheets
         with open(styleSheetPath, "r") as fh:
             self.setStyleSheet(fh.read())
 
         self.show()
+    def function_del_paths(self):
+        print("Очишаем список")
 
     def function_show_settings(self):
         some = Dialog(self)
@@ -230,7 +248,7 @@ class Example(QWidget):
         else:
             print("нажата кнопка cancel")
   
-    def function_convert(self):
+    def function_convert(self, value):
         try:
              width = int(self.width_lineEdit.text())
              height = int(self.height_lineEdit.text())
@@ -238,12 +256,13 @@ class Example(QWidget):
              print("enter size")
         else:
              size = (width, height)
-             ff = ['logo.jpg', 'test.png']
-             for i in ff:
-                  image = Image.open(i)
-                  filename, file_extension = os.path.splitext(i)
-                  resized_image = image.resize(size, Image.ANTIALIAS)
-                  resized_image.save(filename+file_extension)
+             #ff = ['logo.jpg', 'test.png']
+             #for i in paths_alist:
+                  #print(i)
+                  #image = Image.open(i)
+                  #filename, file_extension = os.path.splitext(i)
+                  #resized_image = image.resize(size, Image.ANTIALIAS)
+                  #resized_image.save(filename+file_extension)
              print("done")
              
         
