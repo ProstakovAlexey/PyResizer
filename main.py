@@ -137,25 +137,25 @@ class Dialog(QDialog):
         
         """connecting"""
         self.save_settings.clicked.connect(self.function_set_settings)
-
+    
     def function_set_settings(self):
         extensions_list = [self.extension_1, self.extension_2, self.extension_3]
         sizes_list = [self.size_1, self.size_2]
         names_list = [self.name_1, self.name_2]
-        settings_list = []
+        settings_dict = {}
         for extension in extensions_list:
             if extension.isChecked():
-               settings_list.append(extension.text())
+               settings_dict.update({'extension' : extension.text()})
 
         for size in sizes_list:
             if size.isChecked():
-               settings_list.append(size.text())
+               settings_dict.update({'size' : size.text()})
 
         for name in names_list:
             if name.isChecked():
-               settings_list.append(name.text())
-        print(settings_list)
-        return settings_list     
+               settings_dict.update({'name' : name.text()})
+               
+        return settings_dict     
         
         
         
@@ -262,6 +262,7 @@ class Example(QWidget):
 
     def function_exit(self):
         self.close()
+
     def function_minimize(self):
         self.showMinimized()
         
@@ -277,7 +278,7 @@ class Example(QWidget):
         else:
             print("нажата кнопка cancel")
   
-    def function_convert(self, value):
+    def function_convert(self):
         try:
              width = int(self.width_lineEdit.text())
              height = int(self.height_lineEdit.text())
@@ -285,6 +286,7 @@ class Example(QWidget):
              print("enter size")
         else:
              size = (width, height)
+             setting_adict = Dialog().function_set_settings()
              #ff = ['logo.jpg', 'test.png']
              #for i in paths_alist:
                   #print(i)
@@ -293,6 +295,7 @@ class Example(QWidget):
                   #resized_image = image.resize(size, Image.ANTIALIAS)
                   #resized_image.save(filename+file_extension)
              print("done")
+             print(setting_adict)
              
         
 
