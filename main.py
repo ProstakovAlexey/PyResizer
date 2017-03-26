@@ -155,10 +155,7 @@ class Dialog(QDialog):
             if name.isChecked():
                settings_list.append(name.text())
         print(settings_list)
-        return settings_list
-        
-            
-                
+        return settings_list     
         
         
         
@@ -254,11 +251,20 @@ class Example(QWidget):
         self.settings_button.clicked.connect(self.function_show_settings)
         self.delete_button.clicked.connect(self.function_del_paths)
 
+        """headers buttons"""
+        self.exit_button.clicked.connect(self.function_exit)
+        self.minimize_button.clicked.connect(self.function_minimize)
         #load stylesheets
         with open(styleSheetPath, "r") as fh:
             self.setStyleSheet(fh.read())
 
         self.show()
+
+    def function_exit(self):
+        self.close()
+    def function_minimize(self):
+        self.showMinimized()
+        
     def function_del_paths(self):
         print("Очишаем список")
 
