@@ -44,8 +44,8 @@ for h in handlers:
 
 
 styleSheetPath = "qss/style.stylesheet"
-global paths_alist
-paths_alist = []
+global draged_img_paths
+draged_img_paths = set()
 
 class QCustomWidget(QWidget):
      def __init__ (self, parent = None):
@@ -63,8 +63,8 @@ class QCustomWidget(QWidget):
      def function_select_image(self):
          filename = QFileDialog.getOpenFileName(self, 'Open File', '',
                                                "Images (*.png)")
-         if filename[0] and paths_alist is None:
-            paths_alist.append(filename[0])
+         if filename[0] and draged_img_paths is None:
+            draged_img_paths.add(filename[0])
          
 
      def dragEnterEvent(self, e):
@@ -76,14 +76,14 @@ class QCustomWidget(QWidget):
      def dropEvent(self, e):
          data_raw = e.mimeData().urls()
          for i in data_raw:
-              paths_alist.append(i.toString())
-         self.mimeQLabel.setText(str(len(paths_alist)))
+              draged_img_paths.add(i.toString())
+         self.mimeQLabel.setText(str(len(draged_img_paths)))
          
 class Dialog(QDialog):
     def __init__ (self, parent = None):
         super(Dialog, self).__init__(parent)
-        #self.setWindowTitle("Settings")
-        #self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
+        self.setWindowTitle("Settings")
+        #self.setWindowIcon(QIcon(path_to_img))
         self.save_settings = QtWidgets.QPushButton('Save')
         self.save_settings.setObjectName("save_settings")
         self.extension_1 = QtWidgets.QRadioButton('png')
@@ -182,11 +182,11 @@ class Example(QWidget):
         self.minimize_button = QtWidgets.QPushButton('_')
 
         self.width_lineEdit = QtWidgets.QLineEdit()
-        self.width_lineEdit.setValidator(QIntValidator(1, 99999))
+        self.width_lineEdit.setValidator(QIntValidator(1, 9999))
         self.width_lineEdit.setPlaceholderText('width')
         
         self.height_lineEdit = QtWidgets.QLineEdit()
-        self.height_lineEdit.setValidator(QIntValidator(1, 99999))
+        self.height_lineEdit.setValidator(QIntValidator(1, 9999))
         self.height_lineEdit.setPlaceholderText('height')
           
         self.convert_button = QtWidgets.QPushButton('Convert')
@@ -197,8 +197,6 @@ class Example(QWidget):
         self.delete_button.setIcon(QtGui.QIcon('delete-icon.png'));
         self.delete_button.setIconSize(QtCore.QSize(32, 32));
         
-        
-
         self.drag_field = QCustomWidget()
 
         #self.exit_button.setIcon(QtGui.QIcon('exit-icon.png'));
@@ -267,9 +265,9 @@ class Example(QWidget):
         self.showMinimized()
         
     def function_del_paths(self):
-        paths_alist.clear()
+        draged_img_paths.clear()
         #QCustomWidget().mimeQLabel.setText('0')
-        print(paths_alist)
+        print(draged_img_paths)
         
 
     def function_show_settings(self):
@@ -289,13 +287,14 @@ class Example(QWidget):
         else:
              size = (width, height)
              setting_adict = Dialog().function_set_settings()
-             for i in paths_alist:
-                  #image = Image.open(i)
-                  #filename, file_extension = os.path.splitext(i)
-                  #resized_image = image.resize(size, Image.ANTIALIAS)
-                  #resized_image.save(filename+file_extension)
-                 print(i)
-             print("done")
+             test_set = [string[8:] for string in draged_img_paths]
+             for i in test_set:
+                  image = Image.open(i)
+                  filename, file_extension = os.path.splitext(i)
+                  resized_image = image.resize(size, Image.ANTIALIAS)
+                  resized_image.save(filename+file_extension)
+                  #print(i)
+             #print(set(draged_img_paths))
              
     #Переопределяем методы, тем самым давая возможность перетаскивать widget
     def mousePressEvent(self, event):
