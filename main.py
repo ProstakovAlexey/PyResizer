@@ -52,14 +52,14 @@ class QCustomWidget(QWidget):
          super(QCustomWidget, self).__init__(parent)
          self.setAcceptDrops(True)
 
-         self.mimeQLabel = QtWidgets.QPushButton('Drag image here')
-         self.mimeQLabel.setFixedHeight(200)
-         self.mimeQLabel.setObjectName("mimeQLabel")
+         self.mineField = QtWidgets.QPushButton('Drag image here')
+         #self.mineField.setFixedHeight(200)
+         self.mineField.setObjectName("mineField")
          allQHBoxLayout = QtWidgets.QHBoxLayout()
-         allQHBoxLayout.addWidget(self.mimeQLabel)
+         allQHBoxLayout.addWidget(self.mineField)
          self.setLayout(allQHBoxLayout)
 
-         self.mimeQLabel.clicked.connect(self.function_select_image)
+         self.mineField.clicked.connect(self.function_select_image)
      def function_select_image(self):
          filename = QFileDialog.getOpenFileName(self, 'Open File', '',
                                                "Images (*.png)")
@@ -77,7 +77,7 @@ class QCustomWidget(QWidget):
          data_raw = e.mimeData().urls()
          for i in data_raw:
               draged_img_paths.add(i.toString())
-         self.mimeQLabel.setText(str(len(draged_img_paths)))
+         self.mineField.setText(str(len(draged_img_paths)))
          
 class Dialog(QDialog):
     def __init__ (self, parent = None):
@@ -181,6 +181,11 @@ class Example(QWidget):
         self.exit_button = QtWidgets.QPushButton('X')
         self.minimize_button = QtWidgets.QPushButton('_')
 
+        self.error_label = QtWidgets.QLabel()
+        self.error_label.setObjectName("error_label")
+        self.error_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+        self.error_label.hide()
+        
         self.width_lineEdit = QtWidgets.QLineEdit()
         self.width_lineEdit.setValidator(QIntValidator(1, 9999))
         self.width_lineEdit.setPlaceholderText('width')
@@ -223,6 +228,10 @@ class Example(QWidget):
         h_field_box.setContentsMargins(0, 0, 0, 0)
         h_field_box.setSpacing(0)
 
+        h_error_box = QtWidgets.QHBoxLayout()
+        h_error_box.addWidget(self.error_label)
+
+
         h_size_box = QtWidgets.QHBoxLayout()
         h_size_box.addWidget(self.width_lineEdit)
         h_size_box.addWidget(self.height_lineEdit)
@@ -235,6 +244,7 @@ class Example(QWidget):
         v_main_box.addLayout(h_header_box)
         v_main_box.addLayout(h_add_box)
         v_main_box.addLayout(h_field_box)
+        v_main_box.addLayout(h_error_box)
         v_main_box.addLayout(h_size_box)
         v_main_box.addLayout(h_button_box)
         v_main_box.setContentsMargins(5, 5, 5, 5)
@@ -266,7 +276,7 @@ class Example(QWidget):
         
     def function_del_paths(self):
         draged_img_paths.clear()
-        #QCustomWidget().mimeQLabel.setText('0')
+        #QCustomWidget().mineField.setText('0')
         print(draged_img_paths)
         
 
@@ -283,20 +293,20 @@ class Example(QWidget):
              width = int(self.width_lineEdit.text())
              height = int(self.height_lineEdit.text())
         except:
-             print("enter size")
+             self.error_label.show()
+             self.error_label.setText("Введите размер")
         else:
+             self.error_label.hide()
              size = (width, height)
              setting_adict = Dialog().function_set_settings()
-             test_set = [string[8:] for string in draged_img_paths]
-             for i in test_set:
+             draged_img_paths_clean= [string[8:] for string in draged_img_paths]
+             for i in draged_img_paths_clean:
                   image = Image.open(i)
                   filename, file_extension = os.path.splitext(i)
                   resized_image = image.resize(size, Image.ANTIALIAS)
                   resized_image.save(filename+file_extension)
-                  #print(i)
-             #print(set(draged_img_paths))
              
-    #Переопределяем методы, тем самым давая возможность перетаскивать widget
+    #Переопределяем методы, тем самым давая возможность перемещать widget
     def mousePressEvent(self, event):
         self.offset = event.pos()
 

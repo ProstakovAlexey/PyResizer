@@ -11,9 +11,7 @@ QToolButton
   background-image: url('logo.jpg');*/
   /*background: transparent;*/
 }
-QLabel {
-  background: red;
-}
+
 QWidget
 {
 /*    color: #fff;
@@ -27,13 +25,27 @@ QWidget
     outline: 0;
     margin-top:0px;*/
 }
-QLabel#mimeQLabel {
-  /*background-color: ;*/
-  border:2px dotted #333;
-
+QLabel#error_label {
+    color:#fff;
+    background: red;
 }
 QPushButton#save_settings {
     background-color: blue;
     selection-background-color:blue;
     selection-color: black;
+}
+
+QPushButton#mineField {
+    background-color: #302F2F;
+    color:#fff;
+    border:2px dotted green;
+    height:200px;
+/*    margin: 0px;
+    padding: 0px;*/
+}
+
+QPushButton#mineField::checked  {
+    background-color: green;
+    color:#fff;
+    border:2px dotted green;
 }
