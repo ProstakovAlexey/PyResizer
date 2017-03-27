@@ -63,8 +63,8 @@ class QCustomWidget(QWidget):
      def function_select_image(self):
          filename = QFileDialog.getOpenFileName(self, 'Open File', '',
                                                "Images (*.png)")
-         if filename[0]:
-             paths_alist.append(filename[0])
+         if filename[0] and paths_alist is None:
+            paths_alist.append(filename[0])
          
 
      def dragEnterEvent(self, e):
@@ -72,24 +72,20 @@ class QCustomWidget(QWidget):
              e.accept()
          else:
              e.ignore()
-             print("faled")
 
      def dropEvent(self, e):
          data_raw = e.mimeData().urls()
          for i in data_raw:
               paths_alist.append(i.toString())
-         paths_alist_len = str(len(paths_alist))
-         self.mimeQLabel.setText(paths_alist_len)
-         #Вызываем главную функцию
-         #Example().function_convert(paths_alist)
-         #print(len(paths_alist))
-         
+         self.mimeQLabel.setText(str(len(paths_alist)))
          
 class Dialog(QDialog):
     def __init__ (self, parent = None):
         super(Dialog, self).__init__(parent)
+        #self.setWindowTitle("Settings")
+        #self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.save_settings = QtWidgets.QPushButton('Save')
-        
+        self.save_settings.setObjectName("save_settings")
         self.extension_1 = QtWidgets.QRadioButton('png')
         self.extension_2 = QtWidgets.QRadioButton('jpg')
         self.extension_3 = QtWidgets.QRadioButton('Как у исходного изображения')
@@ -143,6 +139,7 @@ class Dialog(QDialog):
         sizes_list = [self.size_1, self.size_2]
         names_list = [self.name_1, self.name_2]
         settings_dict = {}
+
         for extension in extensions_list:
             if extension.isChecked():
                settings_dict.update({'extension' : extension.text()})
@@ -154,7 +151,7 @@ class Dialog(QDialog):
         for name in names_list:
             if name.isChecked():
                settings_dict.update({'name' : name.text()})
-               
+        
         return settings_dict     
         
         
@@ -178,16 +175,19 @@ class Example(QWidget):
         #self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
         #self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
-        self.name_programm = QtWidgets.QLabel('PyResizer')
-        self.icon = QtWidgets.QPushButton('icon')
+        self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
+        #self.name_programm = QtWidgets.QLabel('PyResizer')
+        self.icon = QtWidgets.QPushButton(self.title)
         self.exit_button = QtWidgets.QPushButton('X')
         self.minimize_button = QtWidgets.QPushButton('_')
 
         self.width_lineEdit = QtWidgets.QLineEdit()
-        self.width_lineEdit.setValidator(QIntValidator())
+        self.width_lineEdit.setValidator(QIntValidator(1, 99999))
+        self.width_lineEdit.setPlaceholderText('width')
         
         self.height_lineEdit = QtWidgets.QLineEdit()
-        self.height_lineEdit.setValidator(QIntValidator())
+        self.height_lineEdit.setValidator(QIntValidator(1, 99999))
+        self.height_lineEdit.setPlaceholderText('height')
           
         self.convert_button = QtWidgets.QPushButton('Convert')
 
@@ -239,7 +239,7 @@ class Example(QWidget):
         v_main_box.addLayout(h_field_box)
         v_main_box.addLayout(h_size_box)
         v_main_box.addLayout(h_button_box)
-        v_main_box.setContentsMargins(5,5,5,5)
+        v_main_box.setContentsMargins(5, 5, 5, 5)
         
         
         
@@ -267,14 +267,16 @@ class Example(QWidget):
         self.showMinimized()
         
     def function_del_paths(self):
-        print("Очишаем список")
+        paths_alist.clear()
+        #QCustomWidget().mimeQLabel.setText('0')
+        print(paths_alist)
+        
 
     def function_show_settings(self):
         some = Dialog(self)
         result = some.exec_()
         if result == QtWidgets.QDialog.Accepted:
-            print("Ok")
-            #получаем данные с формы
+            pass
         else:
             print("нажата кнопка cancel")
   
@@ -287,17 +289,24 @@ class Example(QWidget):
         else:
              size = (width, height)
              setting_adict = Dialog().function_set_settings()
-             #ff = ['logo.jpg', 'test.png']
-             #for i in paths_alist:
-                  #print(i)
+             for i in paths_alist:
                   #image = Image.open(i)
                   #filename, file_extension = os.path.splitext(i)
                   #resized_image = image.resize(size, Image.ANTIALIAS)
                   #resized_image.save(filename+file_extension)
+                 print(i)
              print("done")
-             print(setting_adict)
              
-        
+    #Переопределяем методы, тем самым давая возможность перетаскивать widget
+    def mousePressEvent(self, event):
+        self.offset = event.pos()
+
+    def mouseMoveEvent(self, event):
+        x=event.globalX()
+        y=event.globalY()
+        x_w = self.offset.x()
+        y_w = self.offset.y()
+        self.move(x-x_w, y-y_w)
 
 
 if __name__ == '__main__':

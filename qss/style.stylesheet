@@ -32,7 +32,8 @@ QLabel#mimeQLabel {
   border:2px dotted #333;
 
 }
-/*QHBoxLayout {
-  background: blue;
-  border:2px solid red;
-}*/
+QPushButton#save_settings {
+    background-color: blue;
+    selection-background-color:blue;
+    selection-color: black;
+}
