@@ -287,6 +287,27 @@ class Example(QWidget):
             pass
         else:
             print("нажата кнопка cancel")
+
+    def process_file_extension(self, file_extension):
+        if setting_adict['extension']=='png':
+            file_extension='png'
+            return file_extension
+        elif setting_adict['extension']=='jpg':
+            file_extension='jpg'
+            return file_extension
+        else:
+            return file_extension
+
+    def process_file_name(self, filename):
+        if setting_adict['name']=='Как у исходного изображения':
+            return filename
+        else:
+            return 'some_image'
+        
+            
+            
+            
+        
   
     def function_convert(self):
         try:
@@ -300,13 +321,16 @@ class Example(QWidget):
              size = (width, height)
              setting_adict = Dialog().function_set_settings()
              draged_img_paths_clean= [string[8:] for string in draged_img_paths]
+             print(setting_adict)
              for i in draged_img_paths_clean:
                   image = Image.open(i)
                   filename, file_extension = os.path.splitext(i)
                   resized_image = image.resize(size, Image.ANTIALIAS)
                   resized_image.save(filename+file_extension)
+             self.error_label.show()
+             self.error_label.setText("Готово")
              
-    #Переопределяем методы, тем самым давая возможность перемещать widget
+    #Переопределяем методы, тем самым давая возможность перемещать окно
     def mousePressEvent(self, event):
         self.offset = event.pos()
 
