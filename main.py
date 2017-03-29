@@ -164,7 +164,7 @@ class Example(QWidget):
         self.left = 300
         self.top = 300
         self.width = 300
-        self.height = 300
+        self.height = 200
 
         self.init_ui()
 
@@ -174,21 +174,17 @@ class Example(QWidget):
         self.setGeometry(self.left, self.top, self.width, self.height)
         #self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
-        #self.name_programm = QtWidgets.QLabel('PyResizer')
-        #pixmap_icon = QPixmap('387.png')
 
         self.icon = QtWidgets.QPushButton(self.title)
         self.icon.setIcon(QtGui.QIcon('387.png'));
         self.icon.setIconSize(QtCore.QSize(16, 16));
-        #self.icon.setPixmap(pixmap_icon)
         self.icon.setObjectName("icon")
         
         
         self.exit_button = QtWidgets.QToolButton()
         self.exit_button.setText('X')
         self.exit_button.setObjectName("exit_button")
-        
-        
+         
         self.minimize_button = QtWidgets.QToolButton()
         self.minimize_button.setText('_')
         self.minimize_button.setObjectName("minimize_button")
@@ -230,6 +226,7 @@ class Example(QWidget):
         
 
         h_field_box = QtWidgets.QHBoxLayout()
+        #h_field_box.addStretch(2)
         h_field_box.addWidget(self.drag_field)
         h_field_box.setContentsMargins(0, 0, 0, 0)
         h_field_box.setSpacing(0)
@@ -250,13 +247,10 @@ class Example(QWidget):
         v_main_box.addLayout(h_header_box)
         v_main_box.addLayout(h_add_box)
         v_main_box.addLayout(h_field_box)
-        v_main_box.addLayout(h_error_box)
+        #v_main_box.addLayout(h_error_box)
         v_main_box.addLayout(h_size_box)
         v_main_box.addLayout(h_button_box)
         v_main_box.setContentsMargins(5, 5, 5, 5)
-        
-        
-        
         
         self.setLayout(v_main_box)
         
@@ -329,7 +323,6 @@ class Example(QWidget):
              size = (width, height)
              setting_adict = Dialog().function_set_settings()
              draged_img_paths_clean= [string[8:] for string in draged_img_paths]
-             print(setting_adict)
              for i in draged_img_paths_clean:
                   image = Image.open(i)
                   filename, file_extension = os.path.splitext(i)
