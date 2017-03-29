@@ -43,7 +43,12 @@ QPushButton#mineField {
 /*    margin: 0px;
     padding: 0px;*/
 }
-
+QToolButton#exit_button {
+  /*background: transparent;*/
+}
+QPushButon#icon {
+  background: transparent;
+}
 QPushButton#mineField::checked  {
     background-color: green;
     color:#fff;

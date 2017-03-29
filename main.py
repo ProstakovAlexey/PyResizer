@@ -91,6 +91,7 @@ class Dialog(QDialog):
         self.extension_3 = QtWidgets.QRadioButton('Как у исходного изображения')
         self.extension_3.setChecked(True)
 
+
         self.extension_group = QtWidgets.QGroupBox('extension')
                  
         v_dmain_box = QtWidgets.QVBoxLayout()
@@ -126,7 +127,6 @@ class Dialog(QDialog):
         vlayout.addWidget(self.size_group)
         vlayout.addWidget(self.name_group)
         
-        
         vlayout.addWidget(self.save_settings)
         
         self.setLayout(vlayout)
@@ -155,8 +155,6 @@ class Dialog(QDialog):
         return settings_dict     
         
         
-        
-        
 class Example(QWidget):
 
     def __init__(self):
@@ -177,14 +175,28 @@ class Example(QWidget):
         #self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
         #self.name_programm = QtWidgets.QLabel('PyResizer')
-        self.icon = QtWidgets.QPushButton(self.title)
-        self.exit_button = QtWidgets.QPushButton('X')
-        self.minimize_button = QtWidgets.QPushButton('_')
+        #pixmap_icon = QPixmap('387.png')
 
-        self.error_label = QtWidgets.QLabel()
-        self.error_label.setObjectName("error_label")
-        self.error_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-        self.error_label.hide()
+        self.icon = QtWidgets.QPushButton(self.title)
+        self.icon.setIcon(QtGui.QIcon('387.png'));
+        self.icon.setIconSize(QtCore.QSize(16, 16));
+        #self.icon.setPixmap(pixmap_icon)
+        self.icon.setObjectName("icon")
+        
+        
+        self.exit_button = QtWidgets.QToolButton()
+        self.exit_button.setText('X')
+        self.exit_button.setObjectName("exit_button")
+        
+        
+        self.minimize_button = QtWidgets.QToolButton()
+        self.minimize_button.setText('_')
+        self.minimize_button.setObjectName("minimize_button")
+
+        self.status_label = QtWidgets.QLabel()
+        self.status_label.setObjectName("status_label")
+        self.status_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+        self.status_label.hide()
         
         self.width_lineEdit = QtWidgets.QLineEdit()
         self.width_lineEdit.setValidator(QIntValidator(1, 9999))
@@ -200,15 +212,9 @@ class Example(QWidget):
 
         self.delete_button = QtWidgets.QToolButton()
         self.delete_button.setIcon(QtGui.QIcon('delete-icon.png'));
-        self.delete_button.setIconSize(QtCore.QSize(32, 32));
+        self.delete_button.setIconSize(QtCore.QSize(16, 16));
         
         self.drag_field = QCustomWidget()
-
-        #self.exit_button.setIcon(QtGui.QIcon('exit-icon.png'));
-        #self.exit_button.setIconSize(QtCore.QSize(32, 32));
-
-        #self.minimize_button.setIcon(QtGui.QIcon('min-icon.png'));
-        #self.minimize_button.setIconSize(QtCore.QSize(32, 32));
 
         
         h_header_box = QtWidgets.QHBoxLayout()
@@ -229,7 +235,7 @@ class Example(QWidget):
         h_field_box.setSpacing(0)
 
         h_error_box = QtWidgets.QHBoxLayout()
-        h_error_box.addWidget(self.error_label)
+        h_error_box.addWidget(self.status_label)
 
 
         h_size_box = QtWidgets.QHBoxLayout()
@@ -262,6 +268,7 @@ class Example(QWidget):
         """headers buttons"""
         self.exit_button.clicked.connect(self.function_exit)
         self.minimize_button.clicked.connect(self.function_minimize)
+
         #load stylesheets
         with open(styleSheetPath, "r") as fh:
             self.setStyleSheet(fh.read())
@@ -289,11 +296,12 @@ class Example(QWidget):
             print("нажата кнопка cancel")
 
     def process_file_extension(self, file_extension):
+        setting_adict = Dialog().function_set_settings()
         if setting_adict['extension']=='png':
-            file_extension='png'
+            file_extension='.png'
             return file_extension
         elif setting_adict['extension']=='jpg':
-            file_extension='jpg'
+            file_extension='.jpg'
             return file_extension
         else:
             return file_extension
@@ -303,21 +311,21 @@ class Example(QWidget):
             return filename
         else:
             return 'some_image'
-        
-            
-            
-            
-        
+
+    def process_file_size(self, size):
+        setting_adict = Dialog().function_set_settings()
+        if setting_adict['size']=='Точно до указанных размеров':
+            pass
   
     def function_convert(self):
         try:
              width = int(self.width_lineEdit.text())
              height = int(self.height_lineEdit.text())
         except:
-             self.error_label.show()
-             self.error_label.setText("Введите размер")
+             self.status_label.show()
+             self.status_label.setText("Введите размер")
         else:
-             self.error_label.hide()
+             self.status_label.hide()
              size = (width, height)
              setting_adict = Dialog().function_set_settings()
              draged_img_paths_clean= [string[8:] for string in draged_img_paths]
@@ -326,9 +334,9 @@ class Example(QWidget):
                   image = Image.open(i)
                   filename, file_extension = os.path.splitext(i)
                   resized_image = image.resize(size, Image.ANTIALIAS)
-                  resized_image.save(filename+file_extension)
-             self.error_label.show()
-             self.error_label.setText("Готово")
+                  resized_image.save(filename+self.process_file_extension(file_extension))
+             self.status_label.show()
+             self.status_label.setText("Готово")
              
     #Переопределяем методы, тем самым давая возможность перемещать окно
     def mousePressEvent(self, event):
