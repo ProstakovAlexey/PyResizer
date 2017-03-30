@@ -60,14 +60,17 @@ class QCustomWidget(QWidget):
          self.setLayout(allQHBoxLayout)
 
          self.mineField.clicked.connect(self.function_select_image)
+
      def function_select_image(self):
          filename = QFileDialog.getOpenFileName(self, 'Open File', '',
                                                "Images (*.png)")
-         if filename[0] and draged_img_paths is None:
-            draged_img_paths.add(filename[0])
+         draged_img_paths.add(filename[0])
+         self.mineField.setText("Selected:"+str(len(draged_img_paths)))
+            
          
 
      def dragEnterEvent(self, e):
+         self.mineField.setText('Drop here')
          if e.mimeData().hasFormat('text/uri-list'):
              e.accept()
          else:
@@ -77,7 +80,7 @@ class QCustomWidget(QWidget):
          data_raw = e.mimeData().urls()
          for i in data_raw:
               draged_img_paths.add(i.toString())
-         self.mineField.setText(str(len(draged_img_paths)))
+         self.mineField.setText("Selected:"+str(len(draged_img_paths)))
          
 class Dialog(QDialog):
     def __init__ (self, parent = None):
@@ -160,7 +163,7 @@ class Example(QWidget):
     def __init__(self):
         super().__init__()
         
-        self.title = 'PyResizer'
+        self.title = 'PyResizer v1.0'
         self.left = 300
         self.top = 300
         self.width = 300
@@ -176,35 +179,40 @@ class Example(QWidget):
         self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
 
         self.icon = QtWidgets.QPushButton(self.title)
-        self.icon.setIcon(QtGui.QIcon('387.png'));
+        self.icon.setIcon(QtGui.QIcon('resizer-icon.png'));
         self.icon.setIconSize(QtCore.QSize(16, 16));
         self.icon.setObjectName("icon")
         
-        
         self.exit_button = QtWidgets.QToolButton()
-        self.exit_button.setText('X')
+        #self.exit_button.setText('X')
         self.exit_button.setObjectName("exit_button")
+        self.exit_button.setIcon(QtGui.QIcon('exit.png'));
+        self.exit_button.setIconSize(QtCore.QSize(16, 16));
          
         self.minimize_button = QtWidgets.QToolButton()
-        self.minimize_button.setText('_')
+        #self.minimize_button.setText('_')
         self.minimize_button.setObjectName("minimize_button")
+        self.minimize_button.setIcon(QtGui.QIcon('min.png'));
+        self.minimize_button.setIconSize(QtCore.QSize(16, 16));
 
-        self.status_label = QtWidgets.QLabel()
-        self.status_label.setObjectName("status_label")
-        self.status_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-        self.status_label.hide()
+        #self.status_label = QtWidgets.QLabel()
+        #self.status_label.setObjectName("status_label")
+        #self.status_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
+        #self.status_label.hide()
         
         self.width_lineEdit = QtWidgets.QLineEdit()
         self.width_lineEdit.setValidator(QIntValidator(1, 9999))
-        self.width_lineEdit.setPlaceholderText('width')
+        self.width_lineEdit.setPlaceholderText('width: px')
         
         self.height_lineEdit = QtWidgets.QLineEdit()
         self.height_lineEdit.setValidator(QIntValidator(1, 9999))
-        self.height_lineEdit.setPlaceholderText('height')
+        self.height_lineEdit.setPlaceholderText('height: px')
           
         self.convert_button = QtWidgets.QPushButton('Convert')
-
+        self.convert_button.setObjectName('convert_button')
+        
         self.settings_button = QtWidgets.QPushButton('Settings')
+        self.settings_button.setObjectName('settings_button')
 
         self.delete_button = QtWidgets.QToolButton()
         self.delete_button.setIcon(QtGui.QIcon('delete-icon.png'));
@@ -226,13 +234,12 @@ class Example(QWidget):
         
 
         h_field_box = QtWidgets.QHBoxLayout()
-        #h_field_box.addStretch(2)
         h_field_box.addWidget(self.drag_field)
         h_field_box.setContentsMargins(0, 0, 0, 0)
         h_field_box.setSpacing(0)
 
-        h_error_box = QtWidgets.QHBoxLayout()
-        h_error_box.addWidget(self.status_label)
+        #h_error_box = QtWidgets.QHBoxLayout()
+        #h_error_box.addWidget(self.status_label)
 
 
         h_size_box = QtWidgets.QHBoxLayout()
@@ -277,8 +284,8 @@ class Example(QWidget):
         
     def function_del_paths(self):
         draged_img_paths.clear()
-        #QCustomWidget().mineField.setText('0')
-        print(draged_img_paths)
+        #self.mineField.setText('0')
+        #print(draged_img_paths)
         
 
     def function_show_settings(self):
@@ -328,8 +335,8 @@ class Example(QWidget):
                   filename, file_extension = os.path.splitext(i)
                   resized_image = image.resize(size, Image.ANTIALIAS)
                   resized_image.save(filename+self.process_file_extension(file_extension))
-             self.status_label.show()
-             self.status_label.setText("Готово")
+             #self.status_label.show()
+             #self.status_label.setText("Готово")
              
     #Переопределяем методы, тем самым давая возможность перемещать окно
     def mousePressEvent(self, event):
