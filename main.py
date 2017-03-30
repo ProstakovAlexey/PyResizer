@@ -53,7 +53,6 @@ class QCustomWidget(QWidget):
          self.setAcceptDrops(True)
 
          self.mineField = QtWidgets.QPushButton('Drag image here')
-         #self.mineField.setFixedHeight(200)
          self.mineField.setObjectName("mineField")
          allQHBoxLayout = QtWidgets.QHBoxLayout()
          allQHBoxLayout.addWidget(self.mineField)
@@ -65,9 +64,7 @@ class QCustomWidget(QWidget):
          filename = QFileDialog.getOpenFileName(self, 'Open File', '',
                                                "Images (*.png)")
          draged_img_paths.add(filename[0])
-         self.mineField.setText("Selected:"+str(len(draged_img_paths)))
-            
-         
+         self.mineField.setText("Selected:"+str(len(draged_img_paths)))     
 
      def dragEnterEvent(self, e):
          self.mineField.setText('Drop here')
@@ -172,10 +169,7 @@ class Example(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        #self.resize(300, 300)
-        #self.setWindowTitle(self.title)
         self.setGeometry(self.left, self.top, self.width, self.height)
-        #self.setWindowFlags(QtCore.Qt.FramelessWindowHint)
         self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
 
         self.icon = QtWidgets.QPushButton(self.title)
@@ -184,21 +178,14 @@ class Example(QWidget):
         self.icon.setObjectName("icon")
         
         self.exit_button = QtWidgets.QToolButton()
-        #self.exit_button.setText('X')
         self.exit_button.setObjectName("exit_button")
         self.exit_button.setIcon(QtGui.QIcon('exit.png'));
         self.exit_button.setIconSize(QtCore.QSize(16, 16));
          
         self.minimize_button = QtWidgets.QToolButton()
-        #self.minimize_button.setText('_')
         self.minimize_button.setObjectName("minimize_button")
         self.minimize_button.setIcon(QtGui.QIcon('min.png'));
         self.minimize_button.setIconSize(QtCore.QSize(16, 16));
-
-        #self.status_label = QtWidgets.QLabel()
-        #self.status_label.setObjectName("status_label")
-        #self.status_label.setAlignment(QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter)
-        #self.status_label.hide()
         
         self.width_lineEdit = QtWidgets.QLineEdit()
         self.width_lineEdit.setValidator(QIntValidator(1, 9999))
@@ -219,8 +206,7 @@ class Example(QWidget):
         self.delete_button.setIconSize(QtCore.QSize(16, 16));
         
         self.drag_field = QCustomWidget()
-
-        
+   
         h_header_box = QtWidgets.QHBoxLayout()
         h_header_box.setContentsMargins(0, 0, 0, 0)
         h_header_box.setSpacing(0)
@@ -232,15 +218,10 @@ class Example(QWidget):
         h_add_box.addWidget(self.delete_button)
         h_add_box.addWidget(self.settings_button)
         
-
         h_field_box = QtWidgets.QHBoxLayout()
         h_field_box.addWidget(self.drag_field)
         h_field_box.setContentsMargins(0, 0, 0, 0)
         h_field_box.setSpacing(0)
-
-        #h_error_box = QtWidgets.QHBoxLayout()
-        #h_error_box.addWidget(self.status_label)
-
 
         h_size_box = QtWidgets.QHBoxLayout()
         h_size_box.addWidget(self.width_lineEdit)
@@ -254,7 +235,6 @@ class Example(QWidget):
         v_main_box.addLayout(h_header_box)
         v_main_box.addLayout(h_add_box)
         v_main_box.addLayout(h_field_box)
-        #v_main_box.addLayout(h_error_box)
         v_main_box.addLayout(h_size_box)
         v_main_box.addLayout(h_button_box)
         v_main_box.setContentsMargins(5, 5, 5, 5)
@@ -287,7 +267,6 @@ class Example(QWidget):
         #self.mineField.setText('0')
         #print(draged_img_paths)
         
-
     def function_show_settings(self):
         some = Dialog(self)
         result = some.exec_()
@@ -334,9 +313,8 @@ class Example(QWidget):
                   image = Image.open(i)
                   filename, file_extension = os.path.splitext(i)
                   resized_image = image.resize(size, Image.ANTIALIAS)
-                  resized_image.save(filename+self.process_file_extension(file_extension))
-             #self.status_label.show()
-             #self.status_label.setText("Готово")
+                  resized_image.save(filename+file_extension)
+                  #self.process_file_extension(file_extension)
              
     #Переопределяем методы, тем самым давая возможность перемещать окно
     def mousePressEvent(self, event):
