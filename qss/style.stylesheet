@@ -4,27 +4,28 @@ QToolButton
   font-family:Consolas;
   line-height: 1.42857143;
   text-align: right;
-  /*background-color: #5cb85c;
-  width: 13px;
-  height: 13px;
-  display:inline-block;
-  background-image: url('logo.jpg');*/
-  /*background: transparent;*/
+}
+QToolButton#delete_button {
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background-color: #0275d8;
+  border-color: #0275d8;
+  padding:5px;
+}
+QToolButton#delete_button::hover {
+  background-color: #025aa5;
+  border-color: #01549b;
 }
 
 QWidget
 {
-    /*color: #f5f5f5;*/
     font-size:15px;
-    /*background-color: #302F2F;*/
     background-color:#333;
-    /*selection-background-color:#3d8ec9;
-    selection-color: black;*/
-    /*background-clip: border;
-    border-radius:10px;
-    border-image: none;*/
-    /*outline: 0;
-    margin-top:0px;*/
 }
 
 QPushButton#save_settings {
@@ -38,8 +39,6 @@ QPushButton#mineField {
     color:#fff;
     border:2px dotted green;
     height:50%;
-/*    margin: 0px;
-    padding: 0px;*/
 }
 QToolButton#minimize_button {
   background: transparent;
@@ -61,24 +60,40 @@ QPushButton#icon {
   color:#fff;
   font-family:Arial, Verdana, sans-serif;
 }
-QPushButton#settings_button {
-  background: #4169e1;
-/*  outline: 0;
-  border:none;*/
-  color:#fff;
+
+QPushButton#convert_button, #settings_button  {
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  
+  color: #fff;
+  background-color: #0275d8;
+  border-color: #0275d8;
+
+}
+QPushButton#settings_button::hover {
+  color: #fff;
+  background-color: #025aa5;
+  border-color: #01549b;
 }
 
-QPushButton#convert_button {
-  background: #4169e1;
-/*  outline: 0;
-  border:none;*/
-  color:#fff;
+
+QPushButton#convert_button::hover {
+  color: #fff;
+  background-color: #025aa5;
+  border-color: #01549b;
 }
-QPushButton#mineField::checked  {
-    background-color: green;
-    color:#fff;
-    border:2px dotted green;
-}
+
 QLineEdit {
   border:2px solid #4169e1;
   border-radius:2px;

@@ -3,7 +3,6 @@
 # Created by: FUNNYDMAN
 #
 # WARNING! All changes made in this file will be lost!
-
 import sys
 import os
 from PIL import Image
@@ -173,7 +172,7 @@ class Example(QWidget):
         self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
 
         self.icon = QtWidgets.QPushButton(self.title)
-        self.icon.setIcon(QtGui.QIcon('resizer-icon.png'));
+        self.icon.setIcon(QtGui.QIcon('logo.png'));
         self.icon.setIconSize(QtCore.QSize(16, 16));
         self.icon.setObjectName("icon")
         
@@ -202,8 +201,9 @@ class Example(QWidget):
         self.settings_button.setObjectName('settings_button')
 
         self.delete_button = QtWidgets.QToolButton()
-        self.delete_button.setIcon(QtGui.QIcon('delete-icon.png'));
+        self.delete_button.setIcon(QtGui.QIcon('trash2.png'));
         self.delete_button.setIconSize(QtCore.QSize(16, 16));
+        self.delete_button.setObjectName('delete_button')
         
         self.drag_field = QCustomWidget()
    
@@ -290,7 +290,7 @@ class Example(QWidget):
         if setting_adict['name']=='Как у исходного изображения':
             return filename
         else:
-            return 'some_image'
+            return 'test'
 
     def process_file_size(self, size):
         setting_adict = Dialog().function_set_settings()
@@ -302,19 +302,16 @@ class Example(QWidget):
              width = int(self.width_lineEdit.text())
              height = int(self.height_lineEdit.text())
         except:
-             self.status_label.show()
-             self.status_label.setText("Введите размер")
+             print("Problem")
         else:
-             self.status_label.hide()
              size = (width, height)
              setting_adict = Dialog().function_set_settings()
              draged_img_paths_clean= [string[8:] for string in draged_img_paths]
              for i in draged_img_paths_clean:
-                  image = Image.open(i)
-                  filename, file_extension = os.path.splitext(i)
-                  resized_image = image.resize(size, Image.ANTIALIAS)
-                  resized_image.save(filename+file_extension)
-                  #self.process_file_extension(file_extension)
+                 image = Image.open(i)
+                 filename, file_extension = os.path.splitext(i)
+                 resized_image = image.resize(size, Image.ANTIALIAS)
+                 resized_image.save(str(filename+self.process_file_extension(file_extension)))
              
     #Переопределяем методы, тем самым давая возможность перемещать окно
     def mousePressEvent(self, event):
