@@ -172,18 +172,18 @@ class Example(QWidget):
         self.setWindowFlags(QtCore.Qt.CustomizeWindowHint)
 
         self.icon = QtWidgets.QPushButton(self.title)
-        self.icon.setIcon(QtGui.QIcon('logo.png'));
+        self.icon.setIcon(QtGui.QIcon('images/logo.png'));
         self.icon.setIconSize(QtCore.QSize(16, 16));
         self.icon.setObjectName("icon")
         
         self.exit_button = QtWidgets.QToolButton()
         self.exit_button.setObjectName("exit_button")
-        self.exit_button.setIcon(QtGui.QIcon('exit.png'));
+        self.exit_button.setIcon(QtGui.QIcon('images/exit.png'));
         self.exit_button.setIconSize(QtCore.QSize(16, 16));
          
         self.minimize_button = QtWidgets.QToolButton()
         self.minimize_button.setObjectName("minimize_button")
-        self.minimize_button.setIcon(QtGui.QIcon('min.png'));
+        self.minimize_button.setIcon(QtGui.QIcon('images/min.png'));
         self.minimize_button.setIconSize(QtCore.QSize(16, 16));
         
         self.width_lineEdit = QtWidgets.QLineEdit()
@@ -201,7 +201,7 @@ class Example(QWidget):
         self.settings_button.setObjectName('settings_button')
 
         self.delete_button = QtWidgets.QToolButton()
-        self.delete_button.setIcon(QtGui.QIcon('trash2.png'));
+        self.delete_button.setIcon(QtGui.QIcon('images/trash2.png'));
         self.delete_button.setIconSize(QtCore.QSize(16, 16));
         self.delete_button.setObjectName('delete_button')
         
