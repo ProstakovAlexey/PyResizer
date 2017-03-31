@@ -8,15 +8,10 @@ import os
 from PIL import Image
 import logging
 import logging.handlers
-from PyQt5.QtWidgets import QApplication, QWidget
-from PyQt5.QtGui import QIcon
+from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5 import QtGui, QtWidgets, QtCore
-from PyQt5 import *
 from PyQt5.QtWidgets import (QMainWindow, QTextEdit,
-    QAction, QFileDialog, QApplication, QLabel, QDialog)
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-
+    QAction, QFileDialog, QApplication, QLabel, QDialog, QWidget)
 
 ###############################################
 #### LOGGING CLASS SETTINGS (py25+, py30+) ####
@@ -61,7 +56,7 @@ class QCustomWidget(QWidget):
 
      def function_select_image(self):
          filename = QFileDialog.getOpenFileName(self, 'Open File', '',
-                                               "Images (*.png)")
+                                               "Images (*.png *.jpg)")
          draged_img_paths.add(filename[0])
          self.mineField.setText("Selected:"+str(len(draged_img_paths)))     
 
@@ -82,14 +77,13 @@ class Dialog(QDialog):
     def __init__ (self, parent = None):
         super(Dialog, self).__init__(parent)
         self.setWindowTitle("Settings")
-        #self.setWindowIcon(QIcon(path_to_img))
+        self.setWindowIcon(QIcon('images/logo.png'))
         self.save_settings = QtWidgets.QPushButton('Save')
         self.save_settings.setObjectName("save_settings")
         self.extension_1 = QtWidgets.QRadioButton('png')
         self.extension_2 = QtWidgets.QRadioButton('jpg')
         self.extension_3 = QtWidgets.QRadioButton('Как у исходного изображения')
         self.extension_3.setChecked(True)
-
 
         self.extension_group = QtWidgets.QGroupBox('extension')
                  
@@ -101,31 +95,8 @@ class Dialog(QDialog):
         self.extension_group.setLayout(v_dmain_box)
 
         
-        self.size_1 = QtWidgets.QRadioButton('С соблюдением пропорций')
-        self.size_2 = QtWidgets.QRadioButton('Точно до указанных размеров')
-        self.size_2.setChecked(True)
-
-        self.size_group = QtWidgets.QGroupBox('size')
-        v_dsize_box = QtWidgets.QVBoxLayout()
-        v_dsize_box.addWidget(self.size_1)
-        v_dsize_box.addWidget(self.size_2)
-        self.size_group.setLayout(v_dsize_box)
-        
-        self.name_1 = QtWidgets.QRadioButton('Оставить прежним')
-        self.name_2 = QtWidgets.QRadioButton('По формату')
-        self.name_1.setChecked(True)
-
-        self.name_group = QtWidgets.QGroupBox('name of file')
-        v_dname_box = QtWidgets.QVBoxLayout()
-        v_dname_box.addWidget(self.name_1)
-        v_dname_box.addWidget(self.name_2)
-        self.name_group.setLayout(v_dname_box)
-
         vlayout = QtWidgets.QVBoxLayout()
         vlayout.addWidget(self.extension_group)
-        vlayout.addWidget(self.size_group)
-        vlayout.addWidget(self.name_group)
-        
         vlayout.addWidget(self.save_settings)
         
         self.setLayout(vlayout)
@@ -135,21 +106,11 @@ class Dialog(QDialog):
     
     def function_set_settings(self):
         extensions_list = [self.extension_1, self.extension_2, self.extension_3]
-        sizes_list = [self.size_1, self.size_2]
-        names_list = [self.name_1, self.name_2]
         settings_dict = {}
 
         for extension in extensions_list:
             if extension.isChecked():
                settings_dict.update({'extension' : extension.text()})
-
-        for size in sizes_list:
-            if size.isChecked():
-               settings_dict.update({'size' : size.text()})
-
-        for name in names_list:
-            if name.isChecked():
-               settings_dict.update({'name' : name.text()})
         
         return settings_dict     
         
@@ -264,16 +225,13 @@ class Example(QWidget):
         
     def function_del_paths(self):
         draged_img_paths.clear()
-        #self.mineField.setText('0')
-        #print(draged_img_paths)
+        obj = QCustomWidget()
+        #print(obj.mineField.text())
+        obj.mineField.setText(str("some"))
         
     def function_show_settings(self):
-        some = Dialog(self)
-        result = some.exec_()
-        if result == QtWidgets.QDialog.Accepted:
-            pass
-        else:
-            print("нажата кнопка cancel")
+        d_obj = Dialog(self)
+        result = d_obj.exec_()
 
     def process_file_extension(self, file_extension):
         setting_adict = Dialog().function_set_settings()
@@ -285,17 +243,6 @@ class Example(QWidget):
             return file_extension
         else:
             return file_extension
-
-    def process_file_name(self, filename):
-        if setting_adict['name']=='Как у исходного изображения':
-            return filename
-        else:
-            return 'test'
-
-    def process_file_size(self, size):
-        setting_adict = Dialog().function_set_settings()
-        if setting_adict['size']=='Точно до указанных размеров':
-            pass
   
     def function_convert(self):
         try:
@@ -303,6 +250,10 @@ class Example(QWidget):
              height = int(self.height_lineEdit.text())
         except:
              print("Problem")
+             #obj = QCustomWidget()
+             #print(obj.mineField.text())
+             #obj.mineField.setText(str("some"))
+             #QCustomWidget.self.mineField.setText('some')
         else:
              size = (width, height)
              setting_adict = Dialog().function_set_settings()

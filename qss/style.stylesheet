@@ -28,10 +28,10 @@ QWidget
     background-color:#333;
 }
 
-QPushButton#save_settings {
-    background-color: blue;
-    selection-background-color:blue;
-    selection-color: black;
+QPushButton#save_settings::hover {
+  color: #fff;
+  background-color: #025aa5;
+  border-color: #01549b;
 }
 
 QPushButton#mineField {
@@ -61,7 +61,7 @@ QPushButton#icon {
   font-family:Arial, Verdana, sans-serif;
 }
 
-QPushButton#convert_button, #settings_button  {
+QPushButton#convert_button, #settings_button, #save_settings  {
   padding: 6px 12px;
   margin-bottom: 0;
   font-size: 14px;
@@ -99,4 +99,8 @@ QLineEdit {
   border-radius:2px;
   color:#fff;
   font-size:15px;
+}
+
+QGroupBox, QRadioButton {
+  color:#fff;
 }
