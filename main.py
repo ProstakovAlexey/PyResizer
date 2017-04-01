@@ -111,7 +111,7 @@ class Dialog(QDialog):
         for extension in extensions_list:
             if extension.isChecked():
                settings_dict.update({'extension' : extension.text()})
-        
+        self.close()
         return settings_dict     
         
         
