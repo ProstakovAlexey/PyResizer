@@ -249,7 +249,7 @@ class Example(QWidget):
              width = int(self.width_lineEdit.text())
              height = int(self.height_lineEdit.text())
         except:
-             print("Problem")
+             print("Error")
              #obj = QCustomWidget()
              #print(obj.mineField.text())
              #obj.mineField.setText(str("some"))
