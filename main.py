@@ -75,6 +75,7 @@ class QCustomWidget(QWidget):
         self.showSelectedImages()
 
     def showSelectedImages(self):
+        # Перерисовывает кол-во выбранных файлов, т.к. глобальная переменная меняется после конвертации
         self.mineField.setText("Selected:" + str(len(draged_img_paths)))
 
 
@@ -253,8 +254,8 @@ class Example(QWidget):
         width = 0
         height = 0
         make_convert = 0
+        # Пытаемся выполнить конвертацию только в случае, если есть выбранные файлы
         if len(draged_img_paths):
-
             try:
                 width = int(self.width_lineEdit.text().strip())
             except:
@@ -263,38 +264,39 @@ class Example(QWidget):
                 height = int(self.height_lineEdit.text().strip())
             except:
                 pass
+            # В linux ссылка на файл имеет вид file:///home/alexey/..., делает и нее абсолютную
             draged_img_paths_clean = [string.replace(r'file://', '') for string in draged_img_paths]
+            # Обработка случая, когда не задали высоту и ширину
             if width == 0 and height == 0:
                 print("Error. You need input width or height")
-            elif width == 0:
-                for i in draged_img_paths_clean:
-                    image = Image.open(i)
-                    ratio = (height / float(image.size[1]))
-                    size = (int(image.size[0]*ratio), height)
-                    filename, file_extension = os.path.splitext(i)
-                    resized_image = image.resize(size, Image.ANTIALIAS)
-                    resized_image.save(str(filename + self.process_file_extension(file_extension)))
-                make_convert = 1
-            elif height == 0:
-                for i in draged_img_paths_clean:
-                    image = Image.open(i)
-                    ratio = (width / float(image.size[0]))
-                    size = (width, int(image.size[1] * ratio))
-                    filename, file_extension = os.path.splitext(i)
-                    resized_image = image.resize(size, Image.ANTIALIAS)
-                    resized_image.save(str(filename + self.process_file_extension(file_extension)))
-                make_convert = 1
+            # Задано одно или оба
             else:
                 for i in draged_img_paths_clean:
-                    image = Image.open(i)
-                    size = (width, height)
-                    filename, file_extension = os.path.splitext(i)
-                    resized_image = image.resize(size, Image.ANTIALIAS)
-                    resized_image.save(str(filename + self.process_file_extension(file_extension)))
-                make_convert = 1
+                    # Возможно не удасться сконвертировать файл. Это может оказатся не изображение
+                    # или файл защищен от записи
+                    try:
+                        image = Image.open(i)
+                        # Ширина не задана
+                        if width == 0:
+                            ratio = (height / float(image.size[1]))
+                            size = (int(image.size[0]*ratio), height)
+                        # Не задана высота
+                        elif height == 0:
+                            ratio = (width / float(image.size[0]))
+                            size = (width, int(image.size[1] * ratio))
+                        # Заданы обе
+                        else:
+                            size = (width, height)
+                        filename, file_extension = os.path.splitext(i)
+                        resized_image = image.resize(size, Image.ANTIALIAS)
+                        resized_image.save(str(filename + self.process_file_extension(file_extension)))
+                    except:
+                        print('Не удалось сконвертировать файл:', i)
+                    else:
+                        make_convert += 1
         else:
             print('You need selected one or more images')
-
+        # Выполнили конвертацию, почистить список выбранных файлов
         if make_convert:
             self.function_del_paths()
 
