@@ -42,9 +42,9 @@ global draged_img_paths
 draged_img_paths = set()
 
 
-class QCustomWidget(QWidget):
+class QDragDropWidget(QWidget):
     def __init__(self, parent=None):
-        super(QCustomWidget, self).__init__(parent)
+        super(QDragDropWidget, self).__init__(parent)
         self.setAcceptDrops(True)
 
         self.mineField = QtWidgets.QPushButton('Drag image here')
@@ -75,15 +75,24 @@ class QCustomWidget(QWidget):
         self.showSelectedImages()
 
     def showSelectedImages(self):
-        # Перерисовывает кол-во выбранных файлов, т.к. глобальная переменная меняется после конвертации
+        # Перерисовывает кол-во выбранных файлов,
+        # т.к. глобальная переменная меняется после конвертации
         self.mineField.setText("Selected:" + str(len(draged_img_paths)))
 
-
+    def showMessage(self, num_message):
+        message_alist = ["Error. You need input width or height",
+                         "You need selected one or more images",
+                         "Fail to convert",
+                         "Convert successfull"]
+        self.mineField.setText(message_alist[num_message])
+ 
 class Dialog(QDialog):
     def __init__(self, parent=None):
         super(Dialog, self).__init__(parent)
+        
         self.setWindowTitle("Settings")
         self.setWindowIcon(QIcon('images/logo.png'))
+        
         self.save_settings = QtWidgets.QPushButton('Save')
         self.save_settings.setObjectName("save_settings")
         self.extension_1 = QtWidgets.QRadioButton('png')
@@ -120,11 +129,11 @@ class Dialog(QDialog):
         return settings_dict
 
 
-class Example(QWidget):
+class QMainWindow(QWidget):
     def __init__(self):
         super().__init__()
 
-        self.title = 'PyResizer v1.0'
+        self.title = 'PyResizer v1.1'
         self.left = 300
         self.top = 300
         self.width = 300
@@ -166,11 +175,11 @@ class Example(QWidget):
         self.settings_button.setObjectName('settings_button')
 
         self.delete_button = QtWidgets.QToolButton()
-        self.delete_button.setIcon(QtGui.QIcon('images/trash2.png'));
+        self.delete_button.setIcon(QtGui.QIcon('images/trash.png'));
         self.delete_button.setIconSize(QtCore.QSize(16, 16));
         self.delete_button.setObjectName('delete_button')
 
-        self.drag_field = QCustomWidget()
+        self.drag_field = QDragDropWidget()
 
         h_header_box = QtWidgets.QHBoxLayout()
         h_header_box.setContentsMargins(0, 0, 0, 0)
@@ -184,7 +193,9 @@ class Example(QWidget):
         h_add_box.addWidget(self.settings_button)
 
         h_field_box = QtWidgets.QHBoxLayout()
+        #h_field_box.addStretch()
         h_field_box.addWidget(self.drag_field)
+        #h_field_box.addStretch()
         h_field_box.setContentsMargins(0, 0, 0, 0)
         h_field_box.setSpacing(0)
 
@@ -210,7 +221,7 @@ class Example(QWidget):
         self.settings_button.clicked.connect(self.function_show_settings)
         self.delete_button.clicked.connect(self.function_del_paths)
 
-        """headers buttons"""
+        """headers buttons connecting"""
         self.exit_button.clicked.connect(self.function_exit)
         self.minimize_button.clicked.connect(self.function_minimize)
 
@@ -229,9 +240,6 @@ class Example(QWidget):
     def function_del_paths(self):
         draged_img_paths.clear()
         self.drag_field.showSelectedImages()
-        obj = QCustomWidget()
-        # print(obj.mineField.text())
-        obj.mineField.setText(str("some"))
 
     def function_show_settings(self):
         d_obj = Dialog(self)
@@ -254,7 +262,8 @@ class Example(QWidget):
         width = 0
         height = 0
         make_convert = 0
-        # Пытаемся выполнить конвертацию только в случае, если есть выбранные файлы
+        """Пытаемся выполнить конвертацию только в случае,
+        если есть выбранные файлы."""
         if len(draged_img_paths):
             try:
                 width = int(self.width_lineEdit.text().strip())
@@ -265,10 +274,10 @@ class Example(QWidget):
             except:
                 pass
             # В linux ссылка на файл имеет вид file:///home/alexey/..., делает и нее абсолютную
-            draged_img_paths_clean = [string.replace(r'file://', '') for string in draged_img_paths]
+            draged_img_paths_clean = [string.replace(r'file:///', '') for string in draged_img_paths]
             # Обработка случая, когда не задали высоту и ширину
             if width == 0 and height == 0:
-                print("Error. You need input width or height")
+                self.drag_field.showMessage(0)
             # Задано одно или оба
             else:
                 for i in draged_img_paths_clean:
@@ -291,14 +300,15 @@ class Example(QWidget):
                         resized_image = image.resize(size, Image.ANTIALIAS)
                         resized_image.save(str(filename + self.process_file_extension(file_extension)))
                     except:
-                        print('Не удалось сконвертировать файл:', i)
+                        self.drag_field.showMessage(2)
                     else:
                         make_convert += 1
         else:
-            print('You need selected one or more images')
-        # Выполнили конвертацию, почистить список выбранных файлов
+            self.drag_field.showMessage(1)
+        # Выполнили конвертацию, вывели сообщение. 
         if make_convert:
-            self.function_del_paths()
+            #self.function_del_paths()
+            self.drag_field.showMessage(3)
 
     # Переопределяем методы, тем самым давая возможность перемещать окно
     def mousePressEvent(self, event):
@@ -314,5 +324,5 @@ class Example(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = Example()
+    ex = QMainWindow()
     sys.exit(app.exec_())
