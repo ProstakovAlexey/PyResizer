@@ -38,9 +38,9 @@ for h in handlers:
 
 
 styleSheetPath = "qss/style.stylesheet"
-global draged_img_paths
+global draged_img_paths, settings_dict
 draged_img_paths = set()
-
+settings_dict = {}
 
 class QDragDropWidget(QWidget):
     def __init__(self, parent=None):
@@ -98,6 +98,11 @@ class Dialog(QDialog):
         self.extension_1 = QtWidgets.QRadioButton('png')
         self.extension_2 = QtWidgets.QRadioButton('jpg')
         self.extension_3 = QtWidgets.QRadioButton('Как у исходного изображения')
+
+        self.extension_1.setObjectName("extension_1")
+        self.extension_2.setObjectName("extension_2")
+        self.extension_3.setObjectName("extension_3")
+
         self.extension_3.setChecked(True)
 
         self.extension_group = QtWidgets.QGroupBox('extension')
@@ -116,17 +121,15 @@ class Dialog(QDialog):
         self.setLayout(vlayout)
 
         """connecting"""
-        self.save_settings.clicked.connect(self.function_set_settings)
+        self.save_settings.clicked.connect(self.accept)
 
     def function_set_settings(self):
         extensions_list = [self.extension_1, self.extension_2, self.extension_3]
-        settings_dict = {}
-
+        
         for extension in extensions_list:
             if extension.isChecked():
                 settings_dict.update({'extension': extension.text()})
-        self.close()
-        return settings_dict
+                return extension
 
 
 class QMainWindow(QWidget):
@@ -193,9 +196,7 @@ class QMainWindow(QWidget):
         h_add_box.addWidget(self.settings_button)
 
         h_field_box = QtWidgets.QHBoxLayout()
-        #h_field_box.addStretch()
         h_field_box.addWidget(self.drag_field)
-        #h_field_box.addStretch()
         h_field_box.setContentsMargins(0, 0, 0, 0)
         h_field_box.setSpacing(0)
 
@@ -242,21 +243,29 @@ class QMainWindow(QWidget):
         self.drag_field.showSelectedImages()
 
     def function_show_settings(self):
-        d_obj = Dialog(self)
-        result = d_obj.exec_()
+        dialog = Dialog(self)
+        result = dialog.exec_()
+        if result == QtWidgets.QDialog.Accepted:
+            #сохраняем значение выбранной radiobutton
+            data = dialog.function_set_settings()
+            selected_option = data.objectName()
 
-    def process_file_extension(self, file_extension):
-        setting_adict = Dialog().function_set_settings()
-        if setting_adict['extension'] == 'png':
+    def process_file_extension(self, file_extension):  
+        if settings_dict['extension'] == 'png':
             file_extension = '.png'
             return file_extension
-        elif setting_adict['extension'] == 'jpg':
+        elif settings_dict['extension'] == 'jpg':
             file_extension = '.jpg'
             return file_extension
         else:
             return file_extension
 
     def function_convert(self):
+        if settings_dict:
+            pass
+        else:
+            data = Dialog().function_set_settings()
+    
         """You can input only one variable: width or height.
         If have only one: convert will be make proportionally"""
         width = 0

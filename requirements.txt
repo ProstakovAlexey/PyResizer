@@ -1,0 +1,5 @@
+Pillow==3.4.1
+pypiwin32==219
+PyQt5==5.7
+qtconsole==4.2.1
+
